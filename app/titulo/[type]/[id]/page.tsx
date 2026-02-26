@@ -124,7 +124,7 @@ export default async function TituloPage({ params }: { params: ParamsPromise }) 
             <img
               src={`https://image.tmdb.org/t/p/w500${details.poster_path}`}
               alt={title}
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              style={{ width: "100%", objectFit: "cover", display: "block" }}
             />
           ) : null}
         </div>
