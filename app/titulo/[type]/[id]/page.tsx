@@ -99,19 +99,27 @@ export default async function TituloPage({ params }: { params: ParamsPromise }) 
   // ✅ ELENCO PRINCIPAL (top 12)
   const cast: any[] = Array.isArray(details?.credits?.cast) ? details.credits.cast.slice(0, 12) : [];
 
+  // ✅ TRAILER
   const videos: any[] = Array.isArray(details?.videos?.results) ? details.videos.results : [];
-
   const trailer =
-  videos.find((v) => v.site === "YouTube" && v.type === "Trailer" && (v.official === true || v.official === undefined)) ||
-  videos.find((v) => v.site === "YouTube" && v.type === "Teaser") ||
-  videos.find((v) => v.site === "YouTube");
+    videos.find((v) => v.site === "YouTube" && v.type === "Trailer" && (v.official === true || v.official === undefined)) ||
+    videos.find((v) => v.site === "YouTube" && v.type === "Teaser") ||
+    videos.find((v) => v.site === "YouTube");
 
   return (
-    <main style={{ maxWidth: 980, margin: "0 auto", padding: 24, fontFamily: "system-ui" }}>
+    <main
+      style={{
+        maxWidth: 980,
+        margin: "0 auto",
+        padding: "clamp(14px, 3vw, 24px)",
+        fontFamily: "system-ui",
+      }}
+    >
       <BackButton />
 
-      <div style={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: 18, marginTop: 14 }}>
-        <div style={{ background: "#111", borderRadius: 16, overflow: "hidden", aspectRatio: "2/3" }}>
+      {/* ✅ Responsivo via classes (mobile 1 coluna / desktop 2 colunas) */}
+      <div className="detailsGrid">
+        <div className="detailsPoster">
           {details.poster_path ? (
             <img
               src={`https://image.tmdb.org/t/p/w500${details.poster_path}`}
@@ -125,12 +133,7 @@ export default async function TituloPage({ params }: { params: ParamsPromise }) 
           <h1 style={{ margin: 0 }}>{title}</h1>
 
           <div style={{ marginTop: 10, display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <FavoriteButton
-              tmdbId={Number(id)}
-              mediaType={type}
-              title={title}
-              poster={details.poster_path}
-            />
+            <FavoriteButton tmdbId={Number(id)} mediaType={type} title={title} poster={details.poster_path} />
           </div>
 
           <p style={{ opacity: 0.85, marginTop: 12 }}>{details.overview || "Sem sinopse."}</p>
@@ -185,7 +188,7 @@ export default async function TituloPage({ params }: { params: ParamsPromise }) 
             >
               <div style={{ fontWeight: 900, marginBottom: 8 }}>Informações da série</div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: 10 }}>
                 <InfoRow label="Temporadas" value={typeof seasons === "number" ? String(seasons) : "—"} />
                 <InfoRow label="Status" value={statusInfo?.label || status || "—"} />
                 <InfoRow label="Último episódio" value={lastAir || "—"} />
@@ -214,9 +217,8 @@ export default async function TituloPage({ params }: { params: ParamsPromise }) 
                 {cast.map((p: any) => (
                   <div
                     key={p.id}
+                    className="castCard"
                     style={{
-                      minWidth: 140,
-                      maxWidth: 140,
                       border: "1px solid var(--border)",
                       borderRadius: 16,
                       overflow: "hidden",
@@ -245,48 +247,45 @@ export default async function TituloPage({ params }: { params: ParamsPromise }) 
             </>
           ) : null}
 
+          {/* ✅ TRAILER (responsivo) */}
           {trailer?.key ? (
-  <>
-    <h3 style={{ marginTop: 18 }}>Trailer</h3>
+            <>
+              <h3 style={{ marginTop: 18 }}>Trailer</h3>
 
-    <div
-      style={{
-        border: "1px solid var(--border)",
-        borderRadius: 16,
-        overflow: "hidden",
-        background: "var(--panel)",
-        width: "100%",
-        maxWidth: 820, // opcional: deixa mais “filme”
-      }}
-    >
-      <div style={{ position: "relative", width: "100%", aspectRatio: "16/9" as any }}>
-        <iframe
-          src={`https://www.youtube-nocookie.com/embed/${trailer.key}`}
-          title={trailer.name || "Trailer"}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowFullScreen
-          style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            border: 0,
-            display: "block",
-          }}
-        />
-      </div>
+              <div
+                className="trailerCard"
+                style={{
+                  border: "1px solid var(--border)",
+                  borderRadius: 16,
+                  overflow: "hidden",
+                  background: "var(--panel)",
+                }}
+              >
+                <div style={{ position: "relative", width: "100%", aspectRatio: "16/9" as any }}>
+                  <iframe
+                    src={`https://www.youtube-nocookie.com/embed/${trailer.key}`}
+                    title={trailer.name || "Trailer"}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      width: "100%",
+                      height: "100%",
+                      border: 0,
+                      display: "block",
+                    }}
+                  />
+                </div>
 
-      <div style={{ padding: 12, color: "var(--muted)", fontSize: 13 }}>
-        {trailer.name || "Trailer"}
-      </div>
-    </div>
-  </>
-) : null}
+                <div style={{ padding: 12, color: "var(--muted)", fontSize: 13 }}>{trailer.name || "Trailer"}</div>
+              </div>
+            </>
+          ) : null}
 
           {/* ONDE ASSISTIR */}
           <h3 style={{ marginTop: 18 }}>Onde assistir (Brasil)</h3>
-
-         {!providers?.flatrate?.length && <p>Sem dados de streaming para BR.</p>}
+          {!providers?.flatrate?.length && <p>Sem dados de streaming para BR.</p>}
 
           <ProvidersSection title="Assinatura" items={providers?.flatrate || []} />
           <ProvidersSection title="Aluguel" items={providers?.rent || []} />
@@ -307,7 +306,7 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 }
 
 const STREAMING_LINKS: Record<string, string> = {
-  "Netflix": "https://www.netflix.com",
+  Netflix: "https://www.netflix.com",
   "HBO Max": "https://www.hbomax.com",
   "HBO Max Amazon Channel": "https://www.amazon.com/channels",
   "Prime Video": "https://www.primevideo.com",
@@ -324,22 +323,22 @@ function ProvidersSection({ title, items }: { title: string; items: any[] }) {
       <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 8 }}>
         {items.map((p) => (
           <a
-  key={p.provider_id ?? p.provider_name}
-  href={STREAMING_LINKS[p.provider_name] || "#"}
-  target="_blank"
-  rel="noreferrer"
-  style={{
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-    border: "1px solid var(--border)",
-    padding: "8px 10px",
-    borderRadius: 999,
-    background: "rgba(255,255,255,0.02)",
-    textDecoration: "none",
-    color: "inherit",
-  }}
->
+            key={p.provider_id ?? p.provider_name}
+            href={STREAMING_LINKS[p.provider_name] || "#"}
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              border: "1px solid var(--border)",
+              padding: "8px 10px",
+              borderRadius: 999,
+              background: "rgba(255,255,255,0.02)",
+              textDecoration: "none",
+              color: "inherit",
+            }}
+          >
             {p.logo_path ? (
               <img
                 src={`https://image.tmdb.org/t/p/w45${p.logo_path}`}
