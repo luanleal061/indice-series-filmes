@@ -31,44 +31,6 @@ a { color: inherit; }
   }
 }
 
-/* Topo com proporção certa no mobile */
-.mobileHeader{
-  margin-top: 14px;
-}
-
-/* Backdrop “baixinho” (não deixa ficar gigante) */
-.mobileBackdrop{
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;   /* 👈 FORÇA formato paisagem */
-  max-height: 260px;      /* 👈 impede de ficar gigante */
-  border-radius: 18px;
-  overflow: hidden;
-  border: 1px solid var(--border);
-  background: #0f1016;
-}
-
-.mobileBackdrop img{
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.mobileBackdropFallback{
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(255,255,255,0.06), transparent);
-}
-
-.mobileBackdropShade{
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.35), rgba(0,0,0,0.10));
-}
-
 /* Elenco: carrossel bom no mobile */
 .castCard{
   width: 140px;
