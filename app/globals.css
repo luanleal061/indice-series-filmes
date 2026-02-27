@@ -106,3 +106,9 @@ a { color: inherit; }
   .mobileInfoCard{ grid-template-columns: 120px 1fr; }
   .mobilePoster{ width: 120px; }
 }
+ 
+  /* FORÇA tamanho maior no elenco */
+.castCard{
+  width: 150px !important;
+  flex: 0 0 150px !important;
+}
