@@ -216,8 +216,15 @@ export default async function TituloPage({ params }: { params: ParamsPromise }) 
         <>
           <h3 style={{ marginTop: 18 }}>Elenco principal</h3>
 
-          <div className="castRow">
-          
+          <div
+            style={{
+              display: "flex",
+              gap: 12,
+              overflowX: "auto",
+              paddingBottom: 10,
+              scrollBehavior: "smooth",
+            }}
+          >
             {cast.map((p: any) => (
               <div
                 key={p.id}
