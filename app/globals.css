@@ -70,39 +70,39 @@ a { color: inherit; }
   background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.35), rgba(0,0,0,0.10));
 }
 
-/* Card com poster pequeno e texto */
-.mobileInfoCard{
-  margin-top: -22px;
-  padding: 14px;
-  border-radius: 18px;
-  border: 1px solid var(--border);
-  background: rgba(17,18,24,0.92);
-  backdrop-filter: blur(10px);
-  display: grid;
-  grid-template-columns: 92px 1fr;
+/* Elenco: carrossel bom no mobile */
+.castCard{
+  width: 140px;
+  flex: 0 0 140px;
+}
+
+@media (min-width: 900px) {
+  .castCard{
+    width: 160px;
+    flex: 0 0 160px;
+  }
+}
+
+/* container do carrossel */
+.castRow{
+  display: flex;
   gap: 12px;
-  align-items: start;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
 }
 
-.mobilePoster{
-  width: 92px;
-  aspect-ratio: 2 / 3;
-  border-radius: 14px;
-  overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.10);
-  background: rgba(255,255,255,0.03);
+/* cada card “encaixa” ao arrastar */
+.castRow > .castCard{
+  scroll-snap-align: start;
 }
 
-.mobilePoster img{
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+/* esconder scrollbar (Android/Chrome e desktop) */
+.castRow::-webkit-scrollbar{
+  height: 0;
 }
-
-/* Desktop: deixa mais “normal” e espaçoso */
-@media (min-width: 900px){
-  .mobileBackdrop{ height: 320px; max-height: 360px; }
-  .mobileInfoCard{ grid-template-columns: 120px 1fr; }
-  .mobilePoster{ width: 120px; }
+.castRow{
+  scrollbar-width: none; /* firefox */
 }
