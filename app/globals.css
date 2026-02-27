@@ -112,3 +112,45 @@ a { color: inherit; }
   width: 150px !important;
   flex: 0 0 150px !important;
 }
+
+/* Carrossel do Home (Em alta hoje) */
+.rowCarousel{
+  margin-top: 12px;
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.rowCarousel::-webkit-scrollbar{
+  height: 0;
+}
+.rowCarousel{
+  scrollbar-width: none;
+}
+
+/* No mobile: card mais largo e bonito */
+.rowCarouselItem{
+  flex: 0 0 72%;
+  max-width: 320px;
+  scroll-snap-align: start;
+}
+
+/* Em telas um pouco maiores: cabem 2 */
+@media (min-width: 520px){
+  .rowCarouselItem{
+    flex-basis: 44%;
+    max-width: 360px;
+  }
+}
+
+/* Desktop: tamanho fixo tipo Netflix row */
+@media (min-width: 900px){
+  .rowCarouselItem{
+    flex-basis: 220px;
+    max-width: 220px;
+  }
+}

@@ -10,16 +10,9 @@ type Item = {
   first_air_date?: string;
 };
 
-export function RowCarousel({
-  title,
-  items,
-}: {
-  title: string;
-  items: Item[];
-}) {
+export function RowCarousel({ title, items }: { title: string; items: Item[] }) {
   const titleOf = (it: Item) => (it.media_type === "movie" ? it.title : it.name) || "Sem título";
-  const dateOf = (it: Item) =>
-    (it.media_type === "movie" ? it.release_date : it.first_air_date) || "—";
+  const dateOf = (it: Item) => (it.media_type === "movie" ? it.release_date : it.first_air_date) || "—";
 
   return (
     <section style={{ marginTop: 18 }}>
@@ -28,18 +21,9 @@ export function RowCarousel({
         <span style={{ color: "var(--muted)", fontSize: 12 }}>{items.length} títulos</span>
       </div>
 
-      <div
-        style={{
-          marginTop: 12,
-          display: "flex",
-          gap: 12,
-          overflowX: "auto",
-          paddingBottom: 10,
-          scrollBehavior: "smooth",
-        }}
-      >
+      <div className="rowCarousel">
         {items.map((it) => (
-          <div key={`${it.media_type}-${it.id}`} style={{ minWidth: 180, maxWidth: 180 }}>
+          <div key={`${it.media_type}-${it.id}`} className="rowCarouselItem">
             <MediaCard
               type={it.media_type}
               id={it.id}
