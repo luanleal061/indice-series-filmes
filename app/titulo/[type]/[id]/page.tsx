@@ -314,47 +314,14 @@ function InfoRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-function providerUrl(name?: string) {
-  const n = (name || "").toLowerCase().trim();
-
-  // Netflix
-  if (n.includes("netflix")) return "https://www.netflix.com";
-
-  // Max / HBO
-  if (n === "max" || n.includes("hbo max") || n.includes("max amazon")) return "https://www.max.com";
-  if (n.includes("hbo")) return "https://www.hbo.com"; // fallback
-
-  // Prime Video / Amazon
-  if (n.includes("prime video") || (n.includes("amazon") && n.includes("video")))
-    return "https://www.primevideo.com";
-  if (n.includes("amazon")) return "https://www.amazon.com";
-
-  // Disney+
-  if (n.includes("disney")) return "https://www.disneyplus.com";
-
-  // Apple TV
-  if (n.includes("apple tv")) return "https://tv.apple.com";
-
-  // Paramount+
-  if (n.includes("paramount")) return "https://www.paramountplus.com";
-
-  // Star+
-  if (n.includes("star+")) return "https://www.starplus.com";
-
-  // Globoplay
-  if (n.includes("globoplay")) return "https://globoplay.globo.com";
-
-  // Crunchyroll
-  if (n.includes("crunchyroll")) return "https://www.crunchyroll.com";
-
-  // Claro tv+
-  if (n.includes("claro")) return "https://www.clarotvmais.com.br";
-
-  // Telecine
-  if (n.includes("telecine")) return "https://www.telecine.com.br";
-
-  return null; // não achou link
-}
+const STREAMING_LINKS: Record<string, string> = {
+  Netflix: "https://www.netflix.com",
+  "HBO Max": "https://www.hbomax.com",
+  "HBO Max Amazon Channel": "https://www.amazon.com/channels",
+  "Prime Video": "https://www.primevideo.com",
+  "Disney+": "https://www.disneyplus.com",
+  "Apple TV Plus": "https://tv.apple.com",
+};
 
 function ProvidersSection({ title, items }: { title: string; items: any[] }) {
   if (!items?.length) return null;
@@ -363,47 +330,36 @@ function ProvidersSection({ title, items }: { title: string; items: any[] }) {
     <div style={{ marginTop: 12 }}>
       <div style={{ fontWeight: 700 }}>{title}</div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 8 }}>
-        {items.map((p) => {
-  const url = providerUrl(p.provider_name);
-
-  return (
-    <a
-      key={p.provider_id ?? p.provider_name}
-      href={url ?? undefined}
-      onClick={(e) => {
-        if (!url) e.preventDefault();
-      }}
-      target={url ? "_blank" : undefined}
-      rel={url ? "noreferrer" : undefined}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 8,
-        border: "1px solid var(--border)",
-        padding: "8px 10px",
-        borderRadius: 999,
-        background: "rgba(255,255,255,0.02)",
-        textDecoration: "none",
-        color: "inherit",
-        opacity: url ? 1 : 0.55,
-        cursor: url ? "pointer" : "not-allowed",
-      }}
-    >
-      {p.logo_path ? (
-        <img
-          src={`https://image.tmdb.org/t/p/w45${p.logo_path}`}
-          alt={p.provider_name}
-          width={22}
-          height={22}
-          style={{ borderRadius: 6 }}
-        />
-      ) : null}
-      <span>{p.provider_name}</span>
-    </a>
-  );
-})}
-          
-           
+        {items.map((p) => (
+          <a
+            key={p.provider_id ?? p.provider_name}
+            href={STREAMING_LINKS[p.provider_name] || "#"}
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              border: "1px solid var(--border)",
+              padding: "8px 10px",
+              borderRadius: 999,
+              background: "rgba(255,255,255,0.02)",
+              textDecoration: "none",
+              color: "inherit",
+            }}
+          >
+            {p.logo_path ? (
+              <img
+                src={`https://image.tmdb.org/t/p/w45${p.logo_path}`}
+                alt={p.provider_name}
+                width={22}
+                height={22}
+                style={{ borderRadius: 6 }}
+              />
+            ) : null}
+            <span>{p.provider_name}</span>
+          </a>
+        ))}
       </div>
     </div>
   );
