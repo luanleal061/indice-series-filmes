@@ -106,6 +106,14 @@ export default async function TituloPage({ params }: { params: ParamsPromise }) 
     videos.find((v) => v.site === "YouTube" && v.type === "Teaser") ||
     videos.find((v) => v.site === "YouTube");
 
+  const backdropUrl = details?.backdrop_path
+    ? `https://image.tmdb.org/t/p/w1280${details.backdrop_path}`
+    : null;
+
+  const posterUrl = details?.poster_path
+    ? `https://image.tmdb.org/t/p/w500${details.poster_path}`
+    : null;
+
   return (
     <main
       style={{
@@ -117,66 +125,28 @@ export default async function TituloPage({ params }: { params: ParamsPromise }) 
     >
       <BackButton />
 
-      {/* ✅ Responsivo via classes (mobile 1 coluna / desktop 2 colunas) */}
-      <div className="detailsGrid">
-        <div className="detailsPoster">
-          {details.poster_path ? (
-            <img
-              src={`https://image.tmdb.org/t/p/w500${details.poster_path}`}
-              alt={title}
-              style={{ width: "100%", objectFit: "cover", display: "block" }}
-            />
-          ) : null}
+      {/* ✅ TOPO com proporções boas no mobile */}
+      <section className="mobileHeader">
+        <div className="mobileBackdrop">
+          {backdropUrl ? <img src={backdropUrl} alt={title} /> : <div className="mobileBackdropFallback" />}
+          <div className="mobileBackdropShade" />
         </div>
 
-        <div>
-          <h1 style={{ margin: 0 }}>{title}</h1>
-
-          <div style={{ marginTop: 10, display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <FavoriteButton tmdbId={Number(id)} mediaType={type} title={title} poster={details.poster_path} />
+        <div className="mobileInfoCard">
+          <div className="mobilePoster">
+            {posterUrl ? <img src={posterUrl} alt={title} /> : null}
           </div>
 
-          <p style={{ opacity: 0.85, marginTop: 12 }}>{details.overview || "Sem sinopse."}</p>
+          <div>
+            <h1 style={{ margin: 0 }}>{title}</h1>
 
-          {/* BLOCO: NOTA + VEREDITO */}
-          <div
-            style={{
-              marginTop: 14,
-              border: "1px solid var(--border)",
-              background: "var(--panel)",
-              borderRadius: 16,
-              padding: 12,
-            }}
-          >
-            <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
-              <span
-                style={{
-                  background: "rgba(229,9,20,0.18)",
-                  border: "1px solid rgba(229,9,20,0.35)",
-                  padding: "6px 10px",
-                  borderRadius: 999,
-                  fontWeight: 800,
-                }}
-              >
-                {verdict}
-              </span>
-
-              <span style={{ color: "var(--muted)" }}>
-                Nota TMDB: <b>{typeof voteAverage === "number" ? voteAverage.toFixed(1) : "—"}</b>/10
-                {" · "}
-                Votos: <b>{typeof voteCount === "number" ? voteCount : "—"}</b>
-                {" · "}
-                Confiança: <b>{confidence}</b>
-              </span>
+            <div style={{ marginTop: 10, display: "flex", gap: 10, flexWrap: "wrap" }}>
+              <FavoriteButton tmdbId={Number(id)} mediaType={type} title={title} poster={details.poster_path} />
             </div>
 
-            <div style={{ marginTop: 8, color: "var(--muted)", fontSize: 13 }}>
-              *Isso é baseado na nota dos usuários da TMDB (não é crítica profissional).
-            </div>
-          </div>
+            <p style={{ opacity: 0.85, marginTop: 12 }}>{details.overview || "Sem sinopse."}</p>
 
-          {/* BLOCO: SÉRIES */}
-          {type === "tv" ? (
+            {/* BLOCO: NOTA + VEREDITO */}
             <div
               style={{
                 marginTop: 14,
@@ -186,112 +156,151 @@ export default async function TituloPage({ params }: { params: ParamsPromise }) 
                 padding: 12,
               }}
             >
-              <div style={{ fontWeight: 900, marginBottom: 8 }}>Informações da série</div>
+              <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+                <span
+                  style={{
+                    background: "rgba(229,9,20,0.18)",
+                    border: "1px solid rgba(229,9,20,0.35)",
+                    padding: "6px 10px",
+                    borderRadius: 999,
+                    fontWeight: 800,
+                  }}
+                >
+                  {verdict}
+                </span>
 
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: 10 }}>
-                <InfoRow label="Temporadas" value={typeof seasons === "number" ? String(seasons) : "—"} />
-                <InfoRow label="Status" value={statusInfo?.label || status || "—"} />
-                <InfoRow label="Último episódio" value={lastAir || "—"} />
-                <InfoRow
-                  label="Próximo episódio"
-                  value={nextEp?.air_date ? `${nextEp.air_date}${nextEp.name ? ` — ${nextEp.name}` : ""}` : "—"}
-                />
+                <span style={{ color: "var(--muted)" }}>
+                  Nota TMDB: <b>{typeof voteAverage === "number" ? voteAverage.toFixed(1) : "—"}</b>/10
+                  {" · "}
+                  Votos: <b>{typeof voteCount === "number" ? voteCount : "—"}</b>
+                  {" · "}
+                  Confiança: <b>{confidence}</b>
+                </span>
+              </div>
+
+              <div style={{ marginTop: 8, color: "var(--muted)", fontSize: 13 }}>
+                *Isso é baseado na nota dos usuários da TMDB (não é crítica profissional).
               </div>
             </div>
-          ) : null}
+          </div>
+        </div>
+      </section>
 
-          {/* ✅ ELENCO */}
-          {cast.length > 0 ? (
-            <>
-              <h3 style={{ marginTop: 18 }}>Elenco principal</h3>
+      {/* BLOCO: SÉRIES */}
+      {type === "tv" ? (
+        <div
+          style={{
+            marginTop: 14,
+            border: "1px solid var(--border)",
+            background: "var(--panel)",
+            borderRadius: 16,
+            padding: 12,
+          }}
+        >
+          <div style={{ fontWeight: 900, marginBottom: 8 }}>Informações da série</div>
 
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: 10 }}>
+            <InfoRow label="Temporadas" value={typeof seasons === "number" ? String(seasons) : "—"} />
+            <InfoRow label="Status" value={statusInfo?.label || status || "—"} />
+            <InfoRow label="Último episódio" value={lastAir || "—"} />
+            <InfoRow
+              label="Próximo episódio"
+              value={nextEp?.air_date ? `${nextEp.air_date}${nextEp.name ? ` — ${nextEp.name}` : ""}` : "—"}
+            />
+          </div>
+        </div>
+      ) : null}
+
+      {/* ✅ ELENCO (mantido) */}
+      {cast.length > 0 ? (
+        <>
+          <h3 style={{ marginTop: 18 }}>Elenco principal</h3>
+
+          <div
+            style={{
+              display: "flex",
+              gap: 12,
+              overflowX: "auto",
+              paddingBottom: 10,
+              scrollBehavior: "smooth",
+            }}
+          >
+            {cast.map((p: any) => (
               <div
-                style={{
-                  display: "flex",
-                  gap: 12,
-                  overflowX: "auto",
-                  paddingBottom: 10,
-                  scrollBehavior: "smooth",
-                }}
-              >
-                {cast.map((p: any) => (
-                  <div
-                    key={p.id}
-                    className="castCard"
-                    style={{
-                      border: "1px solid var(--border)",
-                      borderRadius: 16,
-                      overflow: "hidden",
-                      background: "rgba(255,255,255,0.02)",
-                    }}
-                  >
-                    <div style={{ background: "#0f1016", aspectRatio: "2/3" }}>
-                      {p.profile_path ? (
-                        <img
-                          src={`https://image.tmdb.org/t/p/w185${p.profile_path}`}
-                          alt={p.name}
-                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                        />
-                      ) : null}
-                    </div>
-
-                    <div style={{ padding: 10 }}>
-                      <div style={{ fontWeight: 900, fontSize: 13, lineHeight: 1.2 }}>{p.name}</div>
-                      <div style={{ color: "var(--muted)", fontSize: 12, marginTop: 6, lineHeight: 1.2 }}>
-                        {p.character || "—"}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </>
-          ) : null}
-
-          {/* ✅ TRAILER (responsivo) */}
-          {trailer?.key ? (
-            <>
-              <h3 style={{ marginTop: 18 }}>Trailer</h3>
-
-              <div
-                className="trailerCard"
+                key={p.id}
+                className="castCard"
                 style={{
                   border: "1px solid var(--border)",
                   borderRadius: 16,
                   overflow: "hidden",
-                  background: "var(--panel)",
+                  background: "rgba(255,255,255,0.02)",
                 }}
               >
-                <div style={{ position: "relative", width: "100%", aspectRatio: "16/9" as any }}>
-                  <iframe
-                    src={`https://www.youtube-nocookie.com/embed/${trailer.key}`}
-                    title={trailer.name || "Trailer"}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      width: "100%",
-                      height: "100%",
-                      border: 0,
-                      display: "block",
-                    }}
-                  />
+                <div style={{ background: "#0f1016", aspectRatio: "2/3" }}>
+                  {p.profile_path ? (
+                    <img
+                      src={`https://image.tmdb.org/t/p/w185${p.profile_path}`}
+                      alt={p.name}
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  ) : null}
                 </div>
 
-                <div style={{ padding: 12, color: "var(--muted)", fontSize: 13 }}>{trailer.name || "Trailer"}</div>
+                <div style={{ padding: 10 }}>
+                  <div style={{ fontWeight: 900, fontSize: 13, lineHeight: 1.2 }}>{p.name}</div>
+                  <div style={{ color: "var(--muted)", fontSize: 12, marginTop: 6, lineHeight: 1.2 }}>
+                    {p.character || "—"}
+                  </div>
+                </div>
               </div>
-            </>
-          ) : null}
+            ))}
+          </div>
+        </>
+      ) : null}
 
-          {/* ONDE ASSISTIR */}
-          <h3 style={{ marginTop: 18 }}>Onde assistir (Brasil)</h3>
-          {!providers?.flatrate?.length && <p>Sem dados de streaming para BR.</p>}
+      {/* ✅ TRAILER (mantido) */}
+      {trailer?.key ? (
+        <>
+          <h3 style={{ marginTop: 18 }}>Trailer</h3>
 
-          <ProvidersSection title="Assinatura" items={providers?.flatrate || []} />
-          <ProvidersSection title="Aluguel" items={providers?.rent || []} />
-          <ProvidersSection title="Compra" items={providers?.buy || []} />
-        </div>
-      </div>
+          <div
+            className="trailerCard"
+            style={{
+              border: "1px solid var(--border)",
+              borderRadius: 16,
+              overflow: "hidden",
+              background: "var(--panel)",
+            }}
+          >
+            <div style={{ position: "relative", width: "100%", aspectRatio: "16/9" as any }}>
+              <iframe
+                src={`https://www.youtube-nocookie.com/embed/${trailer.key}`}
+                title={trailer.name || "Trailer"}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  border: 0,
+                  display: "block",
+                }}
+              />
+            </div>
+
+            <div style={{ padding: 12, color: "var(--muted)", fontSize: 13 }}>{trailer.name || "Trailer"}</div>
+          </div>
+        </>
+      ) : null}
+
+      {/* ONDE ASSISTIR */}
+      <h3 style={{ marginTop: 18 }}>Onde assistir (Brasil)</h3>
+      {!providers?.flatrate?.length && <p>Sem dados de streaming para BR.</p>}
+
+      <ProvidersSection title="Assinatura" items={providers?.flatrate || []} />
+      <ProvidersSection title="Aluguel" items={providers?.rent || []} />
+      <ProvidersSection title="Compra" items={providers?.buy || []} />
     </main>
   );
 }
