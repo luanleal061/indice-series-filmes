@@ -320,7 +320,7 @@ const STREAMING_LINKS: Record<string, string> = {
   "HBO Max Amazon Channel": "https://www.amazon.com/channels",
   "Prime Video": "https://www.primevideo.com",
   "Disney Plus": "https://www.disneyplus.com",
-  "Apple TV Plus": "https://tv.apple.com",
+  "Apple TV Plus": "https://tv.apple.com/br",
 };
 
 function ProvidersSection({ title, items }: { title: string; items: any[] }) {
