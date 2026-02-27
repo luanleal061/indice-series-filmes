@@ -34,54 +34,21 @@ export function Navbar({
           margin: "0 auto",
           padding: "14px 16px",
           display: "flex",
+          flexWrap: "wrap", // ✅ permite quebrar linha no mobile
           gap: 12,
           alignItems: "center",
         }}
       >
-        <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
-          <div style={{ fontWeight: 900, letterSpacing: 0.3 }}>
+        {/* Linha 1: Logo */}
+        <div style={{ display: "flex", alignItems: "baseline", gap: 8, minWidth: 0 }}>
+          <div style={{ fontWeight: 900, letterSpacing: 0.3, whiteSpace: "nowrap" }}>
             <span style={{ color: "var(--accent)" }}>N</span>ÍNDICE
           </div>
           <div style={{ color: "var(--muted)", fontSize: 12 }}>Filmes & Séries</div>
         </div>
 
-        <div style={{ flex: 1 }} />
-
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <select
-            value={filter}
-            onChange={(e) => setFilter(e.target.value as any)}
-            style={{
-              background: "var(--panel)",
-              border: "1px solid var(--border)",
-              color: "var(--text)",
-              padding: "10px 10px",
-              borderRadius: 12,
-              outline: "none",
-            }}
-          >
-            <option value="all">Ambos</option>
-            <option value="movie">Filmes</option>
-            <option value="tv">Séries</option>
-          </select>
-
-          <input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Buscar… (ex: Batman)"
-            style={{
-              width: 320,
-              maxWidth: "55vw",
-              background: "var(--panel)",
-              border: "1px solid var(--border)",
-              color: "var(--text)",
-              padding: "10px 12px",
-              borderRadius: 14,
-              outline: "none",
-            }}
-          />
-
-          {/* LOGIN / MINHA LISTA */}
+        {/* Linha 1: Login (fica na direita no desktop, e não estoura no mobile) */}
+        <div style={{ marginLeft: "auto", display: "flex", gap: 8, alignItems: "center" }}>
           {logged ? (
             <>
               <Link
@@ -93,6 +60,7 @@ export function Navbar({
                   borderRadius: 12,
                   background: "rgba(255,255,255,0.03)",
                   fontWeight: 800,
+                  whiteSpace: "nowrap",
                 }}
               >
                 Minha Lista
@@ -119,6 +87,7 @@ export function Navbar({
                     color: "var(--text)",
                     cursor: "pointer",
                     fontWeight: 800,
+                    whiteSpace: "nowrap",
                   }}
                 >
                   Sair
@@ -136,11 +105,58 @@ export function Navbar({
                 color: "var(--text)",
                 cursor: "pointer",
                 fontWeight: 900,
+                whiteSpace: "nowrap",
               }}
             >
               Entrar com Google
             </button>
           )}
+        </div>
+
+        {/* Linha 2 (mobile): filtros + busca ocupam 100% */}
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            gap: 8,
+            alignItems: "center",
+            flexWrap: "wrap",
+          }}
+        >
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value as any)}
+            style={{
+              background: "var(--panel)",
+              border: "1px solid var(--border)",
+              color: "var(--text)",
+              padding: "10px 10px",
+              borderRadius: 12,
+              outline: "none",
+              flex: "0 0 auto",
+            }}
+          >
+            <option value="all">Ambos</option>
+            <option value="movie">Filmes</option>
+            <option value="tv">Séries</option>
+          </select>
+
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Buscar… (ex: Batman)"
+            style={{
+              flex: "1 1 220px", // ✅ cresce e encolhe
+              minWidth: 160,     // ✅ não quebra feio
+              width: "auto",     // ✅ remove largura fixa
+              background: "var(--panel)",
+              border: "1px solid var(--border)",
+              color: "var(--text)",
+              padding: "10px 12px",
+              borderRadius: 14,
+              outline: "none",
+            }}
+          />
         </div>
       </div>
     </header>

@@ -154,3 +154,5 @@ a { color: inherit; }
     max-width: 220px;
   }
 }
+
+html, body { overflow-x: hidden; }
